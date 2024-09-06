@@ -92,34 +92,34 @@ print(longestCommonPrefix(["dog","racecar","car"]))
 
 # Add Binary
 def addBinary(a, b):
-        """
-        UMPIRE method
-        1. Are the only possible digits 1 and 0s?
-        2. Bit manipulation - likely
-        3. Start at the last character of each string and check the digits. If both are 0, keep track of the carry and add 0 to the string. Otherwise, add 1.
-        4. 
-        get the lengh of the smaller string
-        start at the last index of the smaller string and traverse through the entire string
-            at the index, if both numbers are 1, add 0 and keep track of the carry
-            otherwise, add 1
+    """
+    UMPIRE method
+    1. Are the only possible digits 1 and 0s?
+    2. Bit manipulation - likely
+    3. Start at the last character of each string and check the digits. If both are 0, keep track of the carry and add 0 to the string. Otherwise, add 1.
+    4. 
+    get the lengh of the smaller string
+    start at the last index of the smaller string and traverse through the entire string
+        at the index, if both numbers are 1, add 0 and keep track of the carry
+        otherwise, add 1
+    
+    for the larger string, check if any digits have been visited and add the carry if necessary
+    """
+    
+    # OPTIMAL SOLUTION
+    res = ""
+    carry = 0
+    a, b = a[::-1], b[::-1]
+    for i in range(max(len(a), len(b))):
+        digit1 = ord(a[i]) - ord("0") if i < len(a) else 0
+        digit2 = ord(b[i]) - ord("0") if i < len(b) else 0
         
-        for the larger string, check if any digits have been visited and add the carry if necessary
-        """
-        
-        # OPTIMAL SOLUTION
-        res = ""
-        carry = 0
-        a, b = a[::-1], b[::-1]
-        for i in range(max(len(a), len(b))):
-            digit1 = ord(a[i]) - ord("0") if i < len(a) else 0
-            digit2 = ord(b[i]) - ord("0") if i < len(b) else 0
-            
-            total = digit1 + digit2 + carry
-            toAdd = str(total % 2) # digit to append to the string
-            carry = total // 2
-            res = toAdd + res
-        
-        if carry:
-            res = "1" + res
-        
-        return res
+        total = digit1 + digit2 + carry
+        toAdd = str(total % 2) # digit to append to the string
+        carry = total // 2
+        res = toAdd + res
+    
+    if carry:
+        res = "1" + res
+    
+    return res
