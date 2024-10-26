@@ -128,3 +128,51 @@ def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
             if not union(a, b):
                 res = [a, b]
         return res
+
+def findCheapestPrice(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
+        """
+        U - 
+        will all flights be in the format (from, to, price)?
+        we want to find the cheapest price
+        there will be NO multiple flights between 2 cities
+        M - heap, dijkstra
+        P/I - 
+        first, we want to build the adjacency list (key: start, value: (end, price))
+        we want to keep a heap and sort it by the flights remaining since we can have at most k stops
+            the heap will contain a tuple of (flights remaining, start, current price)
+        we also want to initialize a prices list of length n to all float('inf') first 
+
+        from there, we will continue to pop from the heap until it is empty
+        on each iteration, we will update the cost to get to the current city
+
+        if the value of dst in prices isn't float('inf') return it
+        otherwise, return -1
+        R - 
+        E - 
+        Time complexity: O(nlogn) where n is the number of entries in flights
+        Space complexity: O(V + E) where V is the number of vertices and E the number of edges in the graph
+        """
+
+        # heap approach
+        adj = defaultdict(list)
+        for start, end, price in flights:
+            adj[start].append((end, price))
+            
+        heap = [(0, src, 0)] # flights remaining, start, current price
+        prices = [float('inf')] * n
+        prices[src] = 0
+        numStops = 0
+        while heap:
+            num_flights, curr_city, curr_price = heapq.heappop(heap)
+            
+            for nei_city, nei_price in adj[curr_city]:
+                tmp = num_flights
+                if curr_price + nei_price < prices[nei_city]:
+                    tmp += 1
+                    if tmp <= k + 1:
+                        prices[nei_city] = curr_price + nei_price
+                        heapq.heappush(heap, (num_flights + 1, nei_city, prices[nei_city]))
+                        
+        if numStops <= k + 1 and prices[dst] != float('inf'):
+            return prices[dst]
+        return -1 # no valid solution
