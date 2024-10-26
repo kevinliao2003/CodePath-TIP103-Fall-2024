@@ -52,3 +52,79 @@ def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
                     heapq.heappush(heap, (weight + nei_weight, nei_node))
             
         return res if len(visited) == n else -1
+
+def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:
+        """
+        1. Could the graph contain unconnected components?
+        2. Graphs - likely, union find - neutral
+        3. Call the union find method on each of the edges and if the method returns false, update the edge that can be removed. Return the edge at the end after all edges have been processed.
+        4.
+        initialize a ranks array for all the nodes
+        initialize a parents array for all the nodes
+        
+        define a find method (node)
+            initialize node to curr
+            while curr is not equal to its parent
+                set the parent of curr to its grandparent
+                set curr to its parent
+            return curr
+            
+        define a union method (node1, node2)
+            call find on node1 and node2 and set the result to res1 and res2
+            
+            if res1 equals res2
+                return false
+                
+            if the rank of res1 is greater than that of res2
+                add the rank of res2 to the rank of res1
+                update the parent of res2 to res1
+            else
+                add the rank of res1 to the rank of res2
+                update the parent of res1 to res2
+                
+            return true
+            
+        initialize the res (edge to return)
+        loop through all the edges
+            call the union method on the edge and if it returns false
+                set res to that edge
+        return res
+        5. See code below.
+        6. 
+        Time complexity: 
+        O(n) where n is the number of vertices
+        Space complexity: O(n) where n is the number of nodes to account for the ranks and parents lists
+        """
+        n = len(edges)
+        ranks = [1] * (n + 1)
+        parents = [node for node in range(0, n + 1)]
+        
+        # outputs a unique id so that 2 nodes have the same id if and only if they are in the same connected component
+        def find(node):
+            curr = node
+            while curr != parents[curr]:
+                parents[curr] = parents[parents[curr]]
+                curr = parents[curr]
+            return curr
+        
+        def union(node1, node2):
+            # draws an edge between the components with find(node1) and find(node2)
+            res1, res2 = find(node1), find(node2)
+            
+            if res1 == res2:
+                return False
+            
+            if ranks[res1] > ranks[res2]:
+                ranks[res1] += ranks[res2]
+                parents[res2] = res1
+            else:
+                ranks[res2] += ranks[res1]
+                parents[res1] = res2
+                
+            return True
+        
+        res = []
+        for a, b in edges:
+            if not union(a, b):
+                res = [a, b]
+        return res
